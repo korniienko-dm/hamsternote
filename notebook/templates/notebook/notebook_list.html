@@ -1,0 +1,29 @@
+{% extends "main/base_template.html" %}
+
+
+{% block title %}Список ваших блокнотів {{ notebook.title }}{% endblock %}
+
+
+{% block listbar %}
+    <div class="wrapper-listbar">
+        <ul class="listbar-ul">
+        {% for notebook in user_notebooks %}
+            <li class="listbar-li">
+                {% if notebook.title|length > 25 %}
+                    <a href="{% url 'notebook_detail' notebook.pk %}">{{ notebook.title|striptags|slice:":16" }}...</a>
+                {% else %}
+                    <a href="{% url 'notebook_detail' notebook.pk %}">{{ notebook.title }}</a>
+                {% endif %}
+                <span class="notes-count">({{ notebook.notes.count }})</span>
+                 {# Notebook edit page #}
+                 <div class="notebook-info-form">
+                    <a class="notebook-info-button" href="{% url 'notebook_edit' notebook_id=notebook.id %}" title="Докладніше">i</a>
+                </div>
+            </li>
+        {% endfor %}
+         <li class="listbar-li   create-new-notebook">
+             <a href="{% url 'notebook_create' %}">Створити блокнот</a>
+         </li>
+        </ul>
+    </div>
+{% endblock %}

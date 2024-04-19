@@ -1,0 +1,60 @@
+{% extends "main/base_template.html" %}
+{% load static %}
+
+
+{% block title %} Вітаємо в Hamsternote! {% endblock %}
+
+{% block contentbar %}
+<div class="hmp-wrapper-contentbar  new-width-homepage  background-hmp-containner">
+
+
+    <div class="hmp-firsr-screen-containner">
+        <div class="title">
+            <span class="title-01">Вітаємо в</span>
+            <span class="title-02-01">Hamster<span class="title-02-02">note</span></span>
+            <span class="title-03">Ваш простий сервіс для нотаток</span>
+        </div>
+{#        <div class="hmp-image">#}
+{#            <img src="/static/main/img/homepage-title.png" alt="Вітаємо в Hamsternote">#}
+{#        </div>#}
+    </div>
+
+    <div class="hmp-favorite-note-containner  clearfix  background-hmp-favorite ">
+        <div class="title-shared-info-page  mr-lfr-10">
+            <h3>Список ваших закріплених записів</h3>
+        </div>
+        {% for note in user_notes %}
+            <ul class="listbar-ul">
+                {% if note.favorite == True %}
+                    <li class="hmp-detail-listbar-li">
+                        <a href="#" onclick="loadPage(event, '{% url 'note_delete_from_favorite' note_id=note.id %}')" class="view-true">
+                            <img class="favorite-img-star" src="/static/main/img/favorite.png" alt="#" title="Видалити з закріплених">
+                        </a>
+                        {# Count of contacts sharing a note #}
+                        {% for shared_note in shared_count %}
+                            {% if note.id == shared_note.note_id and shared_note.shared_count > 0 %}
+                                <a href="{% url 'shared_info_note' note_id=note.id %}" class="shared-count" title="Кількість контактів з доступом до замітки: {{ shared_note.shared_count }}"><span>{{ shared_note.shared_count  }}</span></a>
+                            {% endif %}
+                        {% endfor %}
+
+                        {% if note.title|length > 50 %}
+                            <a class="detail-listbar-a" href="{% url 'note_detail' note.pk %}">
+                                {{ note.title|striptags|slice:":50" }}...
+                            </a>
+                        {% else %}
+                            <a class="detail-listbar-a" href="{% url 'note_detail' note.pk %}">
+                                {{ note.title }}
+                            </a>
+                        {% endif %}
+                        <span class="note-short-description">{{ note.content|striptags|slice:":70" }}...</span>
+                        <span class="detail-listbar-notebook">В блокноті: {{ note.notebook.title }}</span>
+                        <span class="detail-listbar-update  detail-listbar-mrg-top-0">Змінено: {{ note.updated_at|date:"d.m.Y H:i" }}</span>
+                        <span class="detail-listbar-author">Автор: {{ note.author.email }}</span>
+                    </li>
+                {% endif %}
+            </ul>
+        {% endfor %}
+    </div>
+
+</div>
+{% endblock %}

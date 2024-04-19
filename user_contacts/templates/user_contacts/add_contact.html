@@ -1,0 +1,23 @@
+{% extends "main/base_template.html" %}
+
+
+{% block title %} Додати користувача {% endblock %}
+
+
+{% block contentbar %}
+    <div class="wrapper-contentbar  add-new-contact">
+        <div class="add-cont-title">
+            <h1>Новий контакт</h1>
+        </div>
+        <div class="add-new-cont-form-group">
+            <form method="post">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <div class="info-block">
+                    <p>В цьому розділі ви можете додати користувача до списку ваших "Контактів". Для цього введеіть email користувача в поле.</p>
+                </div>
+                <button class="btn btn-primary" type="submit">Додати до контактів</button>
+            </form>
+        </div>
+    </div>
+{% endblock %}

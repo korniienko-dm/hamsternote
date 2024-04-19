@@ -1,0 +1,18 @@
+{% extends "main/base_template.html" %}
+
+
+{% block title %} Загальний доступ {% endblock %}
+
+
+{% block listbar %}
+    <div class="wrapper-listbar">
+         <ul class="share-listbar-ul">
+            <li class="share-listbar-listbar-li   shared-from-user">
+                <a href="{% url 'shared_note_from_me' %}">Я поділився</a>
+            </li>
+             <li class="share-listbar-listbar-li   shared-for-user">
+                 <a href="{% url 'shared_note_for_me' %}">Поділились зі мною</a>
+            </li>
+        </ul>
+    </div>
+{% endblock %}

@@ -1,0 +1,56 @@
+{% extends "main/base_template.html" %}
+
+
+{% block title %} Інформація про контакт {{ select_contact.contact_user.username }} {% endblock %}
+
+
+{% block listbar %}
+    <div class="ulist-wrapper-listbar">
+        <ul class="ulist-listbar-ul">
+            {% for contact in contacts %}
+            <li class="ulist-listbar-li {% if contact.pk == select_contact.pk %}contact-li-select{% endif %}">
+                <div class="ulist-listbar-li-container">
+                    <p class="ulist-listbar-li-username">
+                        {% if contact.contact_user.username|length > 25 %}
+                            <a href="{% url 'contact_detail' contact.pk %}">{{ contact.contact_user.username|striptags|slice:":16" }}...</a>
+                        {% else %}
+                            <a href="{% url 'contact_detail' contact.pk %}">{{ contact.contact_user.username }}</a>
+                        {% endif %}
+                    </p>
+                    <p class="ulist-listbar-li-email">
+                        {% if contact.contact_user.email|length > 25 %}
+                            {{ contact.contact_user.email|striptags|slice:":16" }}...
+                        {% else %}
+                            {{ contact.contact_user.email }}
+                        {% endif %}
+                    </p>
+                    <p class="ulist-listbar-li-added_at">
+                        Додано: {{ contact.added_at|date:"d.m.Y H:i" }}
+                    </p>
+                </div>
+                <form class="ulist-notebook-del-form" action="{% url 'remove_contact' contact_id=contact.id %}" method="post">
+                    {% csrf_token %}
+                    <button class="ulist-del-button" type="submit" onclick="return confirm('Ви впевнені що хочете видалити контакт: {{ contact.contact_user.email }}')">x</button>
+                </form>
+            </li>
+            {% endfor %}
+             <li class="ulist-listbar-li   ulist-add-new-contact">
+                 <a href="{% url 'add_contact' %}">Новий контакт</a>
+             </li>
+        </ul>
+    </div>
+{% endblock %}
+
+
+{% block contentbar %}
+    <div class="contact-detail-wrapper">
+        <div class="contact-detail-info">
+            <h1>Детальна інформація про контакт:</h1>
+            <p><span>Логін:</span> {{ select_contact.contact_user.username }}</p>
+            <p><span>Email: </span>{{ select_contact.contact_user.email }}</p>
+            <p><span>Ім'я:</span> {{ select_contact.contact_user.first_name }}</p>
+            <p><span>Прізвище:</span> {{ select_contact.contact_user.last_name }}</p>
+            <p><span>Дата додавання в контакти:</span> {{ select_contact.added_at|date:"d.m.Y H:i" }}</p>
+        </div>
+    </div>
+{% endblock %}

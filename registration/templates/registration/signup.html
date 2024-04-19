@@ -1,0 +1,75 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+     <link rel="icon" type="image/png" sizes="16x16" href="{% static 'main/img/favicon.ico' %}" />
+    {% with version='262' %}<link rel="stylesheet" href="{% static 'main/css/start_page.css' %}?ver={{ version }}">{% endwith %}
+    <title>Вітаємо в Hamsternote</title>
+</head>
+<body>
+    <div class="welcome-wrapper">
+        <div class="title-wrapper">
+            <h3>Hamster<span>note</span></h3>
+            <p>Ваш простий сервіс для нотаток...</p>
+        </div>
+        <div class="logo-img">
+             <img src="{% static 'main/img/logo-ham.png' %}" alt="Hamsternote logo">
+        </div>
+        <div class="registrations-title">
+            <h2>Реєстрація нового користувача</h2>
+        </div>
+        {% for message in messages %}
+            <div class="message {{ message.tags }}">
+                {{ message }}
+            </div>
+        {% endfor %}
+        <div class="form-login">
+            <form method="post">
+                {% csrf_token %}
+                {% for field in form %}
+                      {% if field.name == 'username' %}
+                          <div class="input-block-username">
+                              <p class="input-info-block-username">{{ field }}</p>
+                          </div>
+                      {% elif field.name == 'email' %}
+                          <div class="input-block-email">
+                              <p class="input-info-block-email">{{ field }}</p>
+                          </div>
+                      {% elif field.name == 'password1' %}
+                          <div class="input-block-password1">
+                              <p class="input-info-block-password1">{{ field }}</p>
+                          </div>
+                      {% elif field.name == 'password2' %}
+                          <div class="input-block-password2">
+                              <p class="input-info-block-password2">{{ field }}</p>
+                          </div>
+                    {% endif %}
+                {% endfor %}
+                <p class="helptext-info-block-username">Логін може бути не більше 150 символів. Лише літери, цифри та @/./+/-/_</p>
+                <p class="helptext-info-block-email">Вкажіть вашу актуальну електронну адресу</p>
+                <div class="helptext-info-block-password1">
+                  <p>Ваш пароль має відповідати таким вимогам:</p>
+                  <ul>
+                    <li>Мінімум 8 символів</li>
+                    <li>Принаймні одна велика літера</li>
+                    <li>Принаймні одна мала літера</li>
+                    <li>Принаймні одна цифра</li>
+                    <li>Спеціальні символи необов’язкові</li>
+                  </ul>
+                </div>
+                <p class="helptext-info-block-password2">Для підтвердження введіть той самий пароль, що й раніше.</p>
+            <button class="sing-up-button" type="submit">Зареєструватись</button>
+            </form>
+            <div class="gotohome">
+                <a href="{% url 'homepage' %}">На головну...</a>
+            </div>
+        </div>
+    </div>
+    {# Script for processing the appearance of tooltips for registration form fields #}
+    <script src="{% static 'main/js/registration-helptext-show.js' %}"></script>
+</body>
+</html>

@@ -1,0 +1,121 @@
+{% extends "main/base_template.html" %}
+{% load static %}
+
+
+{% block title %} Загальний доступ котрий ви надали: Редагування доступу {% endblock %}
+
+
+{% block listbar %}
+    <div class="wrapper-listbar">
+         <ul class="share-listbar-ul">
+            <li class="share-listbar-listbar-li   shared-from-user  {% if subcategory == 'shared_from_me'%}share-listbar-listbar-li-select{% endif %}">
+                <a href="{% url 'shared_note_from_me' %}">Я поділився</a>
+            </li>
+             <li class="share-listbar-listbar-li   shared-for-user  {% if subcategory == 'shared_for_me'%}share-listbar-listbar-li-select{% endif %}">
+                 <a href="{% url 'shared_note_for_me' %}">Поділились зі мною</a>
+            </li>
+        </ul>
+    </div>
+{% endblock %}
+
+
+{% block detail_listbar %}
+    <div class="wrapper-detail-listbar">
+        <ul class="detail-listbar-ul">
+            {% for note_selected in notes %}
+                {% if note_selected.pk == note.pk %}
+                    <li class="detail-listbar-li  note-li-select">
+                        {% if note_selected.title|length > 50 %}
+                            <a class="detail-listbar-a" href="{% url 'shared_note_from_me_detail' note_selected.pk %}">
+                                {{ note_selected.title|striptags|slice:":50" }}...
+                            </a>
+                        {% else %}
+                            <a class="detail-listbar-a" href="{% url 'shared_note_from_me_detail' note_selected.pk %}">
+                                {{ note_selected.title }}
+                            </a>
+                        {% endif %}
+                        <span class="note-short-description">{{ note_selected.content|striptags|slice:":50" }}...</span>
+                        <span class="detail-listbar-update">Змінено: {{ note_selected.updated_at|date:"d.m.Y H:i" }}</span>
+                        <span class="detail-listbar-author">Автор: {{ note_selected.author.email }}</span>
+                    </li>
+                {% endif %}
+            {% endfor %}
+        </ul>
+    </div>
+{% endblock %}
+
+
+{% block contentbar %}
+    <div class="wrapper-contentbar">
+        <div class="title-shared-info-page">
+            <h1>Інформація про загальный доступ</h1>
+            <h6><span class="bold-h6">Замітка: </span>{{ note.title }}</h6>
+        </div>
+
+    <div class="shared-wrapper" id="shared-wrapper">
+        <div class="shared-with-users-list">
+            <h4>Список контактів яким надано доступ до замітки</h4>
+            {% if note_shared_with_users.count < 1  %}
+                <div class="info-block-shared-with">
+                    <p>Замітка поки що не доступна жодному контакту.</p>
+                </div>
+            {% else %}
+                <ul>
+                    {% for note_shared in note_shared_with_users %}
+                        <li>
+                            {% if note_shared.can_view == True %}
+                                <a href="#" onclick="loadPage(event, '{% url 'change_access_view_rights' note_shared_id=note_shared.id %}')" class="view-true">
+                                    <img src="{% static 'main/img/view-true.png' %}" alt="" title="Перегляд дозволено">
+                                </a>
+                            {% else %}
+                                <a href="#" onclick="loadPage(event, '{% url 'change_access_view_rights' note_shared_id=note_shared.id %}')" class="view-true">
+                                    <img src="{% static 'main/img/view-false.png' %}" alt="" title="Перегляд заборонено">
+                                </a>
+                            {% endif %}
+
+                            {% if note_shared.can_edit == True %}
+                                <a href="#" onclick="loadPage(event, '{% url 'change_access_edit_rights' note_shared_id=note_shared.id %}')" class="edit-true">
+                                    <img src="{% static 'main/img/edit-true.png' %}" alt="" title="Редагування дозволено">
+                                </a>
+                            {% else %}
+                                <a href="#" onclick="loadPage(event, '{% url 'change_access_edit_rights' note_shared_id=note_shared.id %}')" class="edit-true">
+                                    <img src="{% static 'main/img/edit-false.png' %}" alt="" title="Редагування заборонено">
+                                </a>
+                            {% endif %}
+
+                            <a href="{% url 'contact_detail' note_shared.shared_with.pk %}" class="shared-list-username">
+                                {% if note_shared.shared_with.contact_user.username|length > 40 %}
+                                    {{ note_shared.shared_with.contact_user.username|striptags|slice:":40" }}...
+                                {% else %}
+                                    {{ note_shared.shared_with.contact_user.username }}
+                                {% endif %}
+                            </a>
+                            <span class="shared-list-email">{{ note_shared.shared_with.contact_user.email }}</span>
+                            <a href="#" onclick="if(confirm('Ви впевнені що хочете видалити користувача: {{ note_shared.shared_with.contact_user.username }}?')) { loadPage(event, '{% url 'del_contact_from_shared_note' note_shared_id=note_shared.id %}'); }" class="del-contact">
+                                <img src="{% static 'main/img/del-btn.png' %}" alt="" title="Видалити користувача">
+                            </a>
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+        </div>
+        <div class="share-note-form">
+            <h4>Поділитися заміткою</h4>
+            {% for message in messages %}
+                <div class="message  errorlist {{ message.tags }}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+             <div class="form-share-block">
+                 <form method="post">
+                    {% csrf_token %}
+                    {{ form.as_p }}
+                    <button type="submit" class="btn btn-primary   btn-icon-ok">Поділитися</button>
+                </form>
+             </div>
+        </div>
+        <div>
+            <a class="button-back  btn btn-secondary   btn-icon-go-back" href="{% url 'shared_note_from_me_detail' note.pk %}">Повернутись до замітки</a>
+        </div>
+    </div>
+{% endblock %}

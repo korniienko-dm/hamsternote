@@ -1,0 +1,120 @@
+{% extends "main/base_template.html" %}
+{% load static %}
+
+
+{% block title %} Загальний доступ наданий для вас: Список заміток{% endblock %}
+
+
+{% block listbar %}
+    <div class="wrapper-listbar">
+    <ul class="share-listbar-ul">
+        <li class="share-listbar-listbar-li   shared-from-user  {% if subcategory == 'shared_from_me'%}share-listbar-listbar-li-select{% endif %}">
+            <a href="{% url 'shared_note_from_me' %}">Я поділився</a>
+        </li>
+         <li class="share-listbar-listbar-li   shared-for-user  {% if subcategory == 'shared_for_me'%}share-listbar-listbar-li-select{% endif %}">
+             <a href="{% url 'shared_note_for_me' %}">Поділились зі мною</a>
+        </li>
+    </ul>
+    </div>
+{% endblock %}
+
+
+{% block detail_listbar %}
+    <div class="wrapper-detail-listbar">
+        <ul class="detail-listbar-ul">
+            {% for shared_note in shared_notes %}
+                <li class="detail-listbar-li">
+                    {% if shared_note.note.title|length > 50 %}
+                        <a class="detail-listbar-a" href="{% url 'shared_note_for_me_detail' shared_note.note.pk %}">
+                            {{ shared_note.note.title|striptags|slice:":50" }}...
+                        </a>
+                    {% else %}
+                        <a class="detail-listbar-a" href="{% url 'shared_note_for_me_detail' shared_note.note.pk %}">
+                            {{ shared_note.note.title }}
+                        </a>
+                    {% endif %}
+                    <span class="note-short-description">{{ shared_note.note.content|striptags|slice:":50" }}...</span>
+                    <span class="detail-listbar-shared-data">Доступ надано: {{ shared_note.created_at|date:"d.m.Y H:i" }}</span>
+                    <span class="detail-listbar-shared-with">Доступ від: {{ shared_note.owner.email }}</span>
+                    <span class="detail-listbar-shared-rights">Права доступу:
+                        {% if shared_note.can_view == True %}
+                            <span>Перегляд</span>
+                        {% endif %}
+                        {% if shared_note.can_edit == True %}
+                            <span>Редагування</span>
+                        {% endif %}
+                    </span>
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+{% endblock %}
+
+
+{% block contentbar %}
+    <div class="wrapper-contentbar">
+        <div class="title-shared-info-page">
+            <h1>Інформація про доступ який вам надали</h1>
+        </div>
+        <div class="shared-note-from-me-table">
+            <table class="table-shared">
+                <thead>
+                    <tr>
+                        <th class="shared-data">Доступ отримано</th>
+                        <th class="note-title">Назва замітки</th>
+                        <th>Користувач</th>
+                        <th>Перегяд</th>
+                        <th>Редагування</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for shared_note in shared_notes %}
+                    <tr>
+                        <td>{{ shared_note.created_at|date:"d.m.Y H:i" }}</td>
+                        <td class="td-note-name">
+                            {# ***************************** #}
+                            {# note title section #}
+                            {# ***************************** #}
+                            <a class="td-note-name-a" href="{% url 'shared_note_for_me_detail' shared_note.note.pk %}">
+                                {{ shared_note.note.title }}
+                            </a>
+                        </td>
+                        <td class="td-contact-data">
+                            {# ***************************** #}
+                            {# contact information's section #}
+                            {# ***************************** #}
+                            <span class="td-contact-data-username">
+                                <span class="share-for-me-username">{{ shared_note.owner.username }}</span>
+                            </span>
+                            <span class="td-contact-data-email">
+                                {{ shared_note.owner.email }}
+                            </span>
+                        </td>
+
+                        <td class="td-can_view">
+                            {# **************** #}
+                            {# can_view section #}
+                            {# **************** #}
+                            {% if shared_note.can_view == True %}
+                                <img src="{% static 'main/img/view-true.png' %}" alt="" title="Перегляд дозволено" class="can-view-img">
+                            {% else %}
+                                <img src="{% static 'main/img/view-false.png' %}" alt="" title="Перегляд заборонено" class="can-view-img">
+                            {% endif %}
+                        </td>
+                        <td class="td-can_edit">
+                            {# **************** #}
+                            {# can_edit section #}
+                            {# **************** #}
+                            {% if shared_note.can_edit == True %}
+                                <img src="{% static 'main/img/edit-true.png' %}" alt="" title="Редагування дозволено" class="can-edit-img">
+                            {% else %}
+                                <img src="{% static 'main/img/edit-false.png' %}" alt="" title="Редагування заборонено" class="can-edit-img">
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,43 @@
+{% extends "main/base_template.html" %}
+
+
+{% block title %} Інформація про контакт {{ select_contact.contact_user.username }} {% endblock %}
+
+
+{% block contentbar %}
+    <div class="wrapper-contentbar  new-width  background-profile ">
+        <div class="title-shared-info-page">
+            <h1>Інформація про ваш профіль</h1>
+        </div>
+        <div class="prf-form-containner">
+            <form method="post">
+                {% csrf_token %}
+                {% for fild in form %}
+                    {% if fild.name == 'username' %}
+                        <div class="prf-wrap   prf-username">
+                            <span class="prf-label">{{ fild.label }}</span>
+                            {{ fild }}
+                        </div>
+                    {% elif fild.name == 'first_name' %}
+                        <div class="prf-wrap   prf-firstname">
+                             <span class="prf-label">{{ fild.label }}:</span>
+                            {{ fild }}
+                        </div>
+                    {% elif fild.name == 'last_name' %}
+                        <div class="prf-wrap   prf-lastname">
+                            <span class="prf-label">{{ fild.label }}:</span>
+                            {{ fild }}
+                        </div>
+                    {% elif fild.name == 'email' %}
+                        <div class="prf-wrap   prf-email">
+                            <span class="prf-label">{{ fild.label }}:</span>
+
+                            {{ fild }}
+                        </div>
+                    {% endif %}
+                {% endfor %}
+                <button type="submit" class="btn btn-success   btn-icon-add-save ">Зберегти зміни</button>
+            </form>
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,125 @@
+{% extends "main/base_template.html" %}
+{% load static %}
+{% include "main/home_page.html" %}
+
+
+{% block title %} Замітка: {{ note.title }}{% endblock %}
+
+
+{% block listbar %}
+    <div class="wrapper-listbar">
+         <ul class="listbar-ul">
+            {% for notebook in user_notebooks %}
+                <li class="listbar-li  {% if notebook.id == notebook_id %}listbar-li-select{% endif %}">
+                    {% if notebook.title|length > 25 %}
+                        <a class="select-elem" href="{% url 'notebook_detail' notebook.pk %}">{{ notebook.title|striptags|slice:":16" }}...</a>
+                    {% else %}
+                        <a class="select-elem" href="{% url 'notebook_detail' notebook.pk %}">{{ notebook.title }}</a>
+                    {% endif %}
+                    <span class="notes-count">({{ notebook.notes.count }})</span>
+                     {# Notebook edit page #}
+                     <div class="notebook-info-form">
+                        <a class="notebook-info-button" href="{% url 'notebook_edit' notebook_id=notebook.id %}" title="Докладніше">i</a>
+                    </div>
+                </li>
+            {% endfor %}
+             <li class="listbar-li   create-new-notebook">
+                 <a href="{% url 'notebook_create' %}">Створити блокнот</a>
+             </li>
+        </ul>
+    </div>
+{% endblock %}
+
+
+{% block detail_listbar %}
+    <div class="wrapper-detail-listbar">
+        <ul class="detail-listbar-ul  detail-listbar-ul-favorite">
+            {% for note in notes %}
+                {% if note.favorite %}
+                    <li class="detail-listbar-li  {% if note.id == note_id %}note-li-select-favorite{% else %}lisbar-li-opacity{% endif %}">
+                        <a href="#" onclick="loadPage(event, '{% url 'note_delete_from_favorite' note_id=note.id %}')" class="view-true">
+                            <img class="favorite-img-star" src="/static/main/img/favorite.png" alt="#" title="Видалити з закріплених">
+                        </a>
+                        {# Count of contacts sharing a note #}
+                        {% for shared_note in shared_count %}
+                            {% if note.id == shared_note.note_id and shared_note.shared_count > 0 %}
+                                <a href="{% url 'shared_info_note' note_id=note.id %}" class="shared-count" title="Кількість контактів з доступом до замітки: {{ shared_note.shared_count }}"><span>{{ shared_note.shared_count  }}</span></a>
+                            {% endif %}
+                        {% endfor %}                        
+                        {% if note.shared_count > 0 %}<a href="{% url 'shared_info_note' note_id=note.id %}" class="shared-count" title="Загальний доступ до заміитки"><span>{{ note.shared_count }}</span></a>{{ else }}1{% endif %}
+                        {% if note.title|length > 50 %}
+                            <a class="detail-listbar-a" href="{% url 'note_detail' note.pk %}">
+                                {{ note.title|striptags|slice:":50" }}...
+                            </a>
+                        {% else %}
+                            <a class="detail-listbar-a" href="{% url 'note_detail' note.pk %}">
+                                {{ note.title }}
+                            </a>
+                        {% endif %}
+                        <span class="note-short-description">{{ note.content|striptags|slice:":50" }}...</span>
+                        <span class="detail-listbar-update">Змінено: {{ note.updated_at|date:"d.m.Y H:i" }}</span>
+                        <span class="detail-listbar-author">Автор: {{ note.author.email }}</span>
+                    </li>
+                {% endif %}
+            {% endfor %}
+        </ul>
+        <ul class="detail-listbar-ul">
+            {% for note in notes %}
+                {% if not note.favorite %}
+                    <li class="detail-listbar-li  {% if note.id == note_id %}note-li-select{% else %}lisbar-li-opacity{% endif %}">
+                        {# Add note to favorite #}
+                        <a href="#" onclick="loadPage(event, '{% url 'note_add_favorite' note_id=note.id %}')" class="add-favorite">
+                            <img class="favorite-img-star" src="/static/main/img/not-favorite.png" alt="#" title="Закріпити замітку">
+                        </a>                        
+                        {# Count of contacts sharing a note #}
+                        {% for shared_note in shared_count %}
+                            {% if note.id == shared_note.note_id and shared_note.shared_count > 0 %}
+                                <a href="{% url 'shared_info_note' note_id=note.id %}" class="shared-count" title="Кількість контактів з доступом до замітки: {{ shared_note.shared_count }}"><span>{{ shared_note.shared_count  }}</span></a>
+                            {% endif %}
+                        {% endfor %}                        
+                        {% if note.title|length > 50 %}
+                            <a class="detail-listbar-a" href="{% url 'note_detail' note.pk %}">
+                                {{ note.title|striptags|slice:":50" }}...
+                            </a>
+                        {% else %}
+                            <a class="detail-listbar-a" href="{% url 'note_detail' note.pk %}">
+                                {{ note.title }}
+                            </a>
+                        {% endif %}
+                        <span class="note-short-description">{{ note.content|striptags|slice:":50" }}...</span>
+                        <span class="detail-listbar-update">Змінено: {{ note.updated_at|date:"d.m.Y H:i" }}</span>
+                        <span class="detail-listbar-author">Автор: {{ note.author.email }}</span>
+                    </li>
+                {% endif %}
+            {% endfor %}
+        </ul>
+        <div class="create_note_btn">
+            <a href="{% url 'note_create' notebook_id=notebook.id %}" class="btn btn-success   btn-icon-add-new-note">Створити новий запис</a>
+        </div>
+    </div>
+{% endblock %}
+
+
+{% block contentbar %}
+    <div class="wrapper-contentbar">
+        <div class="card">
+            <div class="card-header">
+            {{ note.title }}
+            </div>
+            <div class="card-body">
+                <!-- ck ck-content is ckeditor5 class -->
+                <div class="ck ck-content">
+                    {{ note.content|safe}}
+                </div>
+            </div>
+        </div>
+        <div class="note-button-wrapper">
+            <a class="note_edit   btn btn-primary   btn-icon-add-edit" href="{% url 'note_edit' note.pk %}">Редагувати</a>
+            <a href="{% url 'shared_info_note' note_id=note.id %}" class="btn btn-info   btn-icon-add-share">Загальний доступ</a>
+            <form class="form-del-note"   action="{% url 'note_delete' note_id=note.id %}" method="post">
+                {% csrf_token %}
+                <button onclick="return confirm('Ви впевнені що хочете видалити запис: &quot;{{ note.title }}&quot;')" type="submit" class="btn btn-danger  btn-icon-add-del">Видалити запис</button>
+            </form>
+        </div>
+    </div>
+{% endblock %}

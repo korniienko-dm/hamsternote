@@ -1,0 +1,55 @@
+{% extends "main/base_template.html" %}
+
+
+{% block title %} Створення нової замітки {% endblock %}
+
+
+{% block listbar %}
+    <div class="wrapper-listbar">
+         <ul class="listbar-ul">
+            {% for notebook in user_notebooks %}
+                <li class="listbar-li  {% if notebook.id == notebook_id %}listbar-li-select{% endif %}">
+                    {% if notebook.title|length > 25 %}
+                        <a class="select-elem" href="{% url 'notebook_detail' notebook.pk %}">{{ notebook.title|striptags|slice:":16" }}...</a>
+                    {% else %}
+                        <a class="select-elem" href="{% url 'notebook_detail' notebook.pk %}">{{ notebook.title }}</a>
+                    {% endif %}
+                    <span class="notes-count">({{ notebook.notes.count }})</span>
+                     {# Notebook edit page #}
+                     <div class="notebook-info-form">
+                        <a class="notebook-info-button" href="{% url 'notebook_edit' notebook_id=notebook.id %}" title="Докладніше">i</a>
+                    </div>
+                </li>
+            {% endfor %}
+             <li class="listbar-li   create-new-notebook">
+                 <a href="{% url 'notebook_create' %}">Створити блокнот</a>
+             </li>
+        </ul>
+    </div>
+{% endblock %}
+
+
+{% block contentbar %}
+    <div class="wrapper-contentbar  new-width-note-create">
+        <div class="form-edit-note">
+            <form method="post">
+                {% csrf_token %}
+                {{ form.media }}
+                {% for field in form %}
+                    <div class="form-group">
+                        <label for="{{ field.id_for_label }}" class="text-dark">{{ field.label }}</label>
+                        {{ field }}
+                    </div>
+                {% endfor %}
+                <div class="form-edit-note-btn-save">
+                    <div class="save-btn">
+                        <input type="submit" class="btn btn-success   btn-icon-add-save " value="Зберегти" />
+                    </div>
+                    <div class="cancel-save-btn">
+                        <a href="{% url 'notebook_detail' notebook_id %}" class="btn btn-danger   btn-icon-add-del">Відминити</a>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+{% endblock %}

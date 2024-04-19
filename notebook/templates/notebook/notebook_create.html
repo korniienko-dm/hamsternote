@@ -1,0 +1,58 @@
+{% extends "main/base_template.html" %}
+
+
+{% block title %} Створення нового блокноту {% endblock %}
+
+
+{% block listbar %}
+    <div class="wrapper-listbar">
+         <ul class="listbar-ul">
+            {% for notebook in user_notebooks %}
+                <li class="listbar-li">
+                    {% if notebook.title|length > 25 %}
+                        <a href="{% url 'notebook_detail' notebook.pk %}">{{ notebook.title|striptags|slice:":16" }}...</a>
+                    {% else %}
+                        <a href="{% url 'notebook_detail' notebook.pk %}">{{ notebook.title }}</a>
+                    {% endif %}
+                    <span class="notes-count">({{ notebook.notes.count }})</span>
+                     {# Notebook edit page #}
+                     <div class="notebook-info-form">
+                        <a class="notebook-info-button" href="{% url 'notebook_edit' notebook_id=notebook.id %}" title="Докладніше">i</a>
+                    </div>
+                </li>
+            {% endfor %}
+             <li class="listbar-li   create-new-notebook">
+                 <a href="{% url 'notebook_create' %}">Створити блокнот</a>
+             </li>
+        </ul>
+    </div>
+{% endblock %}
+
+
+{% block contentbar %}
+    <div class="wrapper-contentbar  width-71-pr">
+        <div class="add-notebook-title">
+            <h1>Новий блокнот</h1>
+        </div>
+        <form method="post">
+            {% csrf_token %}
+            {% for field in form %}
+                <div class="form-group">
+                    <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                    {{ field }}
+                    {% if field.help_text %}
+                        <small class="form-text text-muted">{{ field.help_text }}</small>
+                    {% endif %}
+                    {% for error in field.errors %}
+                        <p class="text-danger">{{ error }}</p>
+                    {% endfor %}
+                </div>
+            {% endfor %}
+            <div class="info-block-new-notebook">
+                <p>В цьому розділі ви можете створити <b>новий блокнот</b>. Для цього введеіть назву нового блокнота в форму.</p>
+            </div>
+            <button type="submit" class="btn btn-primary">Створити блокнот</button>
+        </form>
+    </div>
+{% endblock %}
+

@@ -1,0 +1,82 @@
+{% extends "main/base_template.html" %}
+
+
+{% block title %}Детальна інформація про блокнот: {{ notebook.title }}{% endblock %}
+
+
+{% block listbar %}
+    <div class="wrapper-listbar">
+         <ul class="listbar-ul">
+            {% for notebook in user_notebooks %}
+                <li class="listbar-li  {% if notebook.id == notebook_id %}listbar-li-select{% endif %}">
+                    {% if notebook.title|length > 25 %}
+                        <a href="{% url 'notebook_detail' notebook.pk %}">{{ notebook.title|striptags|slice:":16" }}...</a>
+                    {% else %}
+                        <a href="{% url 'notebook_detail' notebook.pk %}">{{ notebook.title }}</a>
+                    {% endif %}
+                    <span class="notes-count">({{ notebook.notes.count }})</span>
+                     {# Notebook edit page #}
+                     <div class="notebook-info-form">
+                        <a class="notebook-info-button" href="{% url 'notebook_edit' notebook_id=notebook.id %}" title="Докладніше">i</a>
+                    </div>
+                </li>
+            {% endfor %}
+             <li class="listbar-li   create-new-notebook">
+                 <a href="{% url 'notebook_create' %}">Створити блокнот</a>
+             </li>
+        </ul>
+    </div>
+{% endblock %}
+
+
+{% block contentbar %}
+    <div class="wrapper-contentbar  new-width-notebook-edit  background-notebook-edit ">
+        <div class="ntb-edit-containner">
+            <div class="title-shared-info-page">
+                <h1>Детальна інформація про блокнот</h1>
+            </div>
+            <div class="ntb-edit-wrap   ntb-edit-name-form">
+                 <span>Назва блокноту: </span>
+                 <form method="post">
+                    {% csrf_token %}
+                    {{ form.as_p }}
+                    <button class="btn btn-success" type="submit">Змінити назву</button>
+                </form>
+            </div>
+            <div class="ntb-edit-wrap   ntb-edit-owner">
+                <p class="ntb-owner-p">
+                    <span class="owner-username">Власник блокноту: </span><span class="owner-username-value">{{ notebook.owner.username }}</span>
+                    <span class="owner-email">{{ notebook.owner.email }}</span>
+                </p>
+            </div>
+            <div class="ntb-edit-wrap   ntb-edit-create">
+                <p class="ntb-create-p">
+                    <span class="ntb-create">Дата створення блокноту: </span><span class="ntb-create-value">{{ notebook.created_at|date:"d.m.Y H:i" }}</span>
+                </p>
+            </div>
+            <div class="ntb-edit-wrap   ntb-edit-updated">
+                <p class="ntb-updated-p">
+                    <span class="ntb-updated">Дата останнього оновлення: </span><span class="ntb-updated-value">{{ notebook.updated_at|date:"d.m.Y H:i" }}</span>
+                </p>
+            </div>
+            <div class="ntb-edit-wrap   ntb-edit-notelist">
+                <p class="ntb-notelist-p">
+                    <span>Cписок записів в блокноті:</span>
+                    <ul class="ntb-notelist-ul">
+                        {% for note in notes_in_notebooks %}
+                            <li class="ntb-notelist-li">
+                                <a class="select-elem" href="{% url 'note_detail' note.pk %}">{{ note.title}} </a>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </p>
+            </div>
+            <div class="ntb-delete-button">
+                <form action="{% url 'notebook_delete' notebook_id=notebook.id %}" method="post">
+                    {% csrf_token %}
+                    <button onclick="return confirm('Ви впевнені що хочете видалити блокнот: &quot;{{ notebook.title }}&quot;')" type="submit" class="btn btn-danger  btn-icon-add-del">Видалити блокнот</button>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}

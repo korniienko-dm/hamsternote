@@ -1,0 +1,20 @@
+{% extends "main/base_template.html" %}
+
+
+{% block title %} Список ваших нагадувань {% endblock %}
+
+
+{% block listbar %}
+    <div class="wrapper-listbar">
+        <ul class="listbar-ul">
+            {% for task in tasks %}
+                <li>{{ task.title }}</li>
+                <li>{{ task.description }}</li>
+                <li>{{ task.remind_at }}</li>
+            {% endfor %}
+         <li class="listbar-li   create-new-notebook">
+             <a href="{% url 'create_task' %}">Створити нагадування</a>
+         </li>
+        </ul>
+    </div>
+{% endblock %}
