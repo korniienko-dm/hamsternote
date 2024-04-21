@@ -1,3 +1,5 @@
+from django.contrib.auth.decorators import login_required
+
 from tasks.forms import TaskForm
 from tasks.models import Task
 from tasks.tasks import send_email_notification
@@ -5,6 +7,7 @@ from django.shortcuts import render
 from django.shortcuts import redirect
 
 
+@login_required
 def tasks_list(request):
     """
     Renders a list of tasks associated with the current user.
@@ -17,6 +20,7 @@ def tasks_list(request):
     return render(request, 'tasks/tasks_list.html', context)
 
 
+@login_required
 def create_task(request):
     """
     Renders a form to create a new task and handles form submission to create the task.

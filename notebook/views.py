@@ -1,3 +1,4 @@
+from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
 from django.shortcuts import redirect
 from django.shortcuts import get_object_or_404
@@ -8,6 +9,7 @@ from .forms import NotebookForm
 from .forms import EditNotebookForm
 
 
+@login_required
 def notebook_list(request):
     """
     Render the list of notebooks.
@@ -22,6 +24,7 @@ def notebook_list(request):
     return render(request, 'notebook/notebook_list.html', context)
 
 
+@login_required
 def notebook_detail(request, notebook_id):
     """
     Render the detail page for a notebook.
@@ -49,6 +52,7 @@ def notebook_detail(request, notebook_id):
     return render(request, 'notebook/notebook_detail.html', context)
 
 
+@login_required
 def notebook_create(request):
     """
     Handle notebook creation.
@@ -77,6 +81,7 @@ def notebook_create(request):
     return render(request, 'notebook/notebook_create.html', context)
 
 
+@login_required
 def notebook_edit(request, notebook_id):
     """
     Handle notebook editing.
@@ -104,6 +109,7 @@ def notebook_edit(request, notebook_id):
     return render(request, 'notebook/notebook_edit.html', context)
 
 
+@login_required
 def notebook_delete(request, notebook_id):
     """
     Handle notebook deletion.

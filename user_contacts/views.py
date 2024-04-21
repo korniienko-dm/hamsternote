@@ -7,6 +7,7 @@ from .models import Contact
 from .forms import UserSearchForm
 
 
+@login_required
 def add_contact(request):
     """
     This view handles the addition of a new contact. If the request method is POST
@@ -30,6 +31,7 @@ def add_contact(request):
     return render(request, 'user_contacts/add_contact.html', context)
 
 
+@login_required
 @login_required
 def contacts_list(request):
     """

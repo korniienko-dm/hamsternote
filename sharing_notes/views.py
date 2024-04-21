@@ -1,4 +1,5 @@
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseRedirect
 from django.shortcuts import redirect
 from django.shortcuts import render
@@ -14,6 +15,7 @@ from .forms import SharingNoteForm
 from .models import SharingNote
 
 
+@login_required
 def shared_note_list(request):
     """
     View function to display the list of shared notes.
@@ -25,6 +27,7 @@ def shared_note_list(request):
     return render(request, 'sharing_notes/shared_note_list.html', context)
 
 
+@login_required
 def shared_note_for_me(request):
     """
     View function to display shared notes for the current user.
@@ -42,6 +45,7 @@ def shared_note_for_me(request):
     return render(request, 'sharing_notes/shared_note_for_me.html', context)
 
 
+@login_required
 def shared_note_for_me_detail(request, shared_note_id):
     """
     View function to delete a contact from a shared note.
@@ -62,6 +66,7 @@ def shared_note_for_me_detail(request, shared_note_id):
     return render(request, 'sharing_notes/shared_note_for_me_detail.html', context)
 
 
+@login_required
 def shared_note_for_me_edit(request, shared_note_id):
     """
     View for editing shared notes intended for the current user.
@@ -102,6 +107,7 @@ def shared_note_for_me_edit(request, shared_note_id):
     return render(request, 'sharing_notes/shared_note_for_me_edit.html', context)
 
 
+@login_required
 def shared_note_from_me(request):
     """
     View for displaying shared notes created by the current user.
@@ -117,6 +123,7 @@ def shared_note_from_me(request):
     return render(request, 'sharing_notes/shared_note_from_me.html', context)
 
 
+@login_required
 def shared_note_from_me_detail(request, shared_note_id):
     """
     View for displaying details of a shared note created by the current user.
@@ -135,6 +142,7 @@ def shared_note_from_me_detail(request, shared_note_id):
     return render(request, 'sharing_notes/shared_note_from_me_detail.html', context)
 
 
+@login_required
 def shared_note_from_me_edit(request, shared_note_id):
     """
     View for editing a shared note created by the current user.
@@ -169,6 +177,7 @@ def shared_note_from_me_edit(request, shared_note_id):
     return render(request, 'sharing_notes/shared_note_from_me_edit.html', context)
 
 
+@login_required
 def shared_note_from_me_settings_change(request, shared_note_id):
     """
     View for changing sharing settings of a shared note created by the current user.
@@ -211,6 +220,7 @@ def shared_note_from_me_settings_change(request, shared_note_id):
     return render(request, 'sharing_notes/shared_note_from_me_settings_change.html', context)
 
 
+@login_required
 def change_access_view_rights(request, note_shared_id):
     """
     View for changing view access rights of a shared note.
@@ -222,6 +232,7 @@ def change_access_view_rights(request, note_shared_id):
     return redirect(request.META.get('HTTP_REFERER', ''))
 
 
+@login_required
 def change_access_edit_rights(request, note_shared_id):
     """
     View for changing edit access rights of a shared note.
@@ -233,6 +244,7 @@ def change_access_edit_rights(request, note_shared_id):
     return redirect(request.META.get('HTTP_REFERER', ''))
 
 
+@login_required
 def del_contact_from_shared_note(request, note_shared_id):
     """
     View for deleting a contact from a shared note.

@@ -13,7 +13,7 @@ from .models import Notebook
 from .forms import NoteForm
 from sharing_notes.forms import SharingNoteForm
 
-
+@login_required
 def note_create(request, notebook_id):
     """
     This view allows a user to create a new note within a specific notebook. It retrieves the current user's notebooks,
@@ -54,6 +54,7 @@ def note_create(request, notebook_id):
     return render(request, 'note/note_create.html', context)
 
 
+@login_required
 def note_detail(request, note_id):
     """
     This view retrieves the current user's notebooks, shared notes, and the selected note based on the provided note
@@ -86,6 +87,7 @@ def note_detail(request, note_id):
     return render(request, 'note/note_detail.html', context)
 
 
+@login_required
 def shared_info_note(request, note_id):
     """
     This view allows a user to share a note with other users. It retrieves the current user's notebooks, shared notes,
@@ -137,6 +139,7 @@ def shared_info_note(request, note_id):
     return render(request, 'note/note_shared_info.html', context)
 
 
+@login_required
 def note_edit(request, note_id):
     """
     This view allows a user to edit an existing note. It retrieves the current user's notebooks, shared notes, the
@@ -180,6 +183,7 @@ def note_edit(request, note_id):
     return render(request, 'note/note_edit.html', context)
 
 
+@login_required
 def note_delete(request, note_id):
     """
     This view allows a user to delete an existing note. It retrieves the note to delete based on the provided note ID,
@@ -191,6 +195,7 @@ def note_delete(request, note_id):
     return redirect('notebook_detail', notebook_id=notebook_id)
 
 
+@login_required
 def note_delete_from_favorite(request, note_id):
     """
     This view allows a user to remove a note from their favorites list. It retrieves the note based on the provided
@@ -202,6 +207,7 @@ def note_delete_from_favorite(request, note_id):
     return redirect(request.META.get('HTTP_REFERER'))
 
 
+@login_required
 def note_add_favorite(request, note_id):
     """
     This view allows a user to add a note to their favorites list. It retrieves the note based on the provided note ID,
