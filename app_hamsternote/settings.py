@@ -31,7 +31,7 @@ SECRET_KEY = os.getenv('SECRET_KEY')
 DEBUG = os.environ['DEBUG'] == 'True'
 
 # ALLOWED_HOSTS = []
-ALLOWED_HOSTS = ['195.14.122.69']
+ALLOWED_HOSTS = ['localhost', '127.0.0.1']
 CSRF_TRUSTED_ORIGINS = ['http://195.14.122.69', 'http://hamsternote.cx.ua', 'https://hamsternote.cx.ua']
 
 LOGIN_REDIRECT_URL = 'homepage'
